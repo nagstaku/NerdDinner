@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using NerdDinner.Models;
+using NerdDinner.DAL;
 
 namespace NerdDinner.Controllers
 {
