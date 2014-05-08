@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
+using System;
+using System.Collections.Generic;
 
 namespace NerdDinner.Models
 {
@@ -6,6 +8,7 @@ namespace NerdDinner.Models
     public class ApplicationUser : IdentityUser
     {
         public string email { get; set; }
+        public List<Meeting> Meetings { get; set; }
     }
 
     //public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

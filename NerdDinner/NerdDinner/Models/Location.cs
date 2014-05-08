@@ -7,6 +7,10 @@ namespace NerdDinner.Models
 {
     public class Location
     {
+        public Location()
+        {
+            Meetings = new List<Meeting>();
+        }
         public Guid LocationID { get; set; }
         public string Name { get; set; }
         public string Address1 { get; set; }

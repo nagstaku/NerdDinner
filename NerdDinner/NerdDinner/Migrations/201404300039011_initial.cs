@@ -26,16 +26,20 @@ namespace NerdDinner.Migrations
                 c => new
                     {
                         MeetingID = c.Guid(nullable: false),
+                        Title = c.String(),
                         Date = c.DateTime(nullable: false),
-                        OwnerID = c.Guid(nullable: false),
-                        Attendees_Id = c.String(maxLength: 128),
+                        Description = c.String(),
+                        OwnerID = c.String(maxLength: 128),
+                        ApplicationUser_Id = c.String(maxLength: 128),
                         Location_LocationID = c.Guid(),
                     })
                 .PrimaryKey(t => t.MeetingID)
-                .ForeignKey("dbo.AspNetUsers", t => t.Attendees_Id)
+                .ForeignKey("dbo.AspNetUsers", t => t.ApplicationUser_Id)
                 .ForeignKey("dbo.Locations", t => t.Location_LocationID)
-                .Index(t => t.Attendees_Id)
-                .Index(t => t.Location_LocationID);
+                .ForeignKey("dbo.AspNetUsers", t => t.OwnerID)
+                .Index(t => t.ApplicationUser_Id)
+                .Index(t => t.Location_LocationID)
+                .Index(t => t.OwnerID);
             
             CreateTable(
                 "dbo.AspNetUsers",
@@ -47,8 +51,11 @@ namespace NerdDinner.Migrations
                         SecurityStamp = c.String(),
                         email = c.String(),
                         Discriminator = c.String(nullable: false, maxLength: 128),
+                        Meeting_MeetingID = c.Guid(),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Meetings", t => t.Meeting_MeetingID)
+                .Index(t => t.Meeting_MeetingID);
             
             CreateTable(
                 "dbo.AspNetUserClaims",
@@ -101,14 +108,18 @@ namespace NerdDinner.Migrations
         
         public override void Down()
         {
+            DropForeignKey("dbo.Meetings", "OwnerID", "dbo.AspNetUsers");
             DropForeignKey("dbo.Meetings", "Location_LocationID", "dbo.Locations");
-            DropForeignKey("dbo.Meetings", "Attendees_Id", "dbo.AspNetUsers");
+            DropForeignKey("dbo.AspNetUsers", "Meeting_MeetingID", "dbo.Meetings");
+            DropForeignKey("dbo.Meetings", "ApplicationUser_Id", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "User_Id", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
+            DropIndex("dbo.Meetings", new[] { "OwnerID" });
             DropIndex("dbo.Meetings", new[] { "Location_LocationID" });
-            DropIndex("dbo.Meetings", new[] { "Attendees_Id" });
+            DropIndex("dbo.AspNetUsers", new[] { "Meeting_MeetingID" });
+            DropIndex("dbo.Meetings", new[] { "ApplicationUser_Id" });
             DropIndex("dbo.AspNetUserClaims", new[] { "User_Id" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
