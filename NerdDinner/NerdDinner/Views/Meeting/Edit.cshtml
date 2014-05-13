@@ -34,6 +34,22 @@
         </div>
 
         <div class="form-group">
+            @Html.LabelFor(model => model.Lat, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Lat)
+                @Html.ValidationMessageFor(model => model.Lat)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.lng, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.lng)
+                @Html.ValidationMessageFor(model => model.lng)
+            </div>
+        </div>
+
+        <div class="form-group">
             @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Description)

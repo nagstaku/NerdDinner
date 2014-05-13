@@ -9,9 +9,9 @@ namespace NerdDinner.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationDataLossAllowed = true;
         }
-
         protected override void Seed(NerdDinner.DAL.ApplicationDbContext context)
         {
             //  This method will be called after migrating to the latest version.

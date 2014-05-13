@@ -40,7 +40,8 @@ namespace NerdDinner.Controllers
         // GET: /Meeting/Create
         public ActionResult Create()
         {
-            return View(new MeetingViewModel());
+            ViewBag.OwnerID = new SelectList(db.IdentityUsers, "Id", "UserName");
+            return View();
         }
 
         // POST: /Meeting/Create
@@ -48,19 +49,18 @@ namespace NerdDinner.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(MeetingViewModel meetingVM)
+        public ActionResult Create([Bind(Include="MeetingID,Title,Date,Lat,lng,Description,OwnerID")] Meeting meeting)
         {
             if (ModelState.IsValid)
             {
-                meetingVM.Meeting.MeetingID = Guid.NewGuid();
-                meetingVM.Location.LocationID = Guid.NewGuid();
-                meetingVM.Meeting.Location = meetingVM.Location;
-                db.Locations.Add(meetingVM.Location);
-                db.Meetings.Add(meetingVM.Meeting);
+                meeting.MeetingID = Guid.NewGuid();
+                db.Meetings.Add(meeting);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(meetingVM);
+
+            ViewBag.OwnerID = new SelectList(db.IdentityUsers, "Id", "UserName", meeting.OwnerID);
+            return View(meeting);
         }
 
         // GET: /Meeting/Edit/5
@@ -75,7 +75,7 @@ namespace NerdDinner.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.OwnerID = new SelectList(db.Users, "Id", "UserName", meeting.OwnerID);
+            ViewBag.OwnerID = new SelectList(db.IdentityUsers, "Id", "UserName", meeting.OwnerID);
             return View(meeting);
         }
 
@@ -84,7 +84,7 @@ namespace NerdDinner.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include="MeetingID,Title,Date,Description,OwnerID")] Meeting meeting)
+        public ActionResult Edit([Bind(Include="MeetingID,Title,Date,Lat,lng,Description,OwnerID")] Meeting meeting)
         {
             if (ModelState.IsValid)
             {
@@ -92,7 +92,7 @@ namespace NerdDinner.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.OwnerID = new SelectList(db.Users, "Id", "UserName", meeting.OwnerID);
+            ViewBag.OwnerID = new SelectList(db.IdentityUsers, "Id", "UserName", meeting.OwnerID);
             return View(meeting);
         }
 

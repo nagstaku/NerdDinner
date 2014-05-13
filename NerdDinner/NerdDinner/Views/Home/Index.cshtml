@@ -23,7 +23,9 @@
         <h3 class="panel-title">@dinner.Title</h3>
       </div>
       <div class="panel-body">
-        @dinner.Description <input type="hidden" value="@dinner.Location.Zip" id="address-@count" />
+        @dinner.Description 
+          <input type="hidden" value="@dinner.Lat" id="address-@count-Lat" />
+          <input type="hidden" value="@dinner.lng" id="address-@count-Lng" />
           <span class="glyphicon glyphicon-map-marker pull-right" style="font-size:larger"></span>
       </div>
 
@@ -37,68 +39,43 @@
 </div>
 <br />
 
-@Html.ActionLink("Meetings", "Index", "Meeting")
-
 @section Scripts {
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
     <script>
         var map;
-        var geocoder;
-        var marker = new google.maps.Marker();
-        var test = new google.maps.LatLng(37, -95);
         function initialize() {
-            geocoder = new google.maps.Geocoder();
             var mapOptions = {
                 center: new google.maps.LatLng(37.09024, -96.712891),
-                zoom: 4
+                zoom: 3
             };
             map = new google.maps.Map(document.getElementById("map-canvas"),
                 mapOptions);
-
-            geocoder.geocode({ 
-                'address': document.getElementById('address-0').value,
-                'address': document.getElementById('address-1').value,
-                'address': document.getElementById('address-2').value
-            }, function (results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
                     var markerRed = new google.maps.Marker({
-                        position: results[0].geometry.location,
+                        position: new google.maps.LatLng(
+                            Number(document.getElementById("address-0-Lat").value),
+                            Number(document.getElementById("address-0-Lng").value)
+                            ),
                         map: map,
                         infowindow: 'test'
                     });
                     var markerGreen = new google.maps.Marker({
-                        position: new google.maps.LatLng(35.09024, -95.712891),
+                        position: new google.maps.LatLng(
+                            Number(document.getElementById("address-1-Lat").value),
+                            Number(document.getElementById("address-1-Lng").value)
+                            ),
                         map: map,
                         icon: 'http://maps.gstatic.com/mapfiles/markers2/icon_green.png'
                     });
                     var markerBlue = new google.maps.Marker({
-                        position: new google.maps.LatLng(37.09024, -96.712891),
+                        position: new google.maps.LatLng(
+                            Number(document.getElementById("address-2-Lat").value),
+                            Number(document.getElementById("address-2-Lng").value)
+                            ),
                         map: map,
                         icon: 'http://maps.gstatic.com/mapfiles/markers2/boost-marker-mapview.png'
                     });
-                } else {
-                    alert("City and State not recognized. Error:" + status);
-                }
-            })
         }
         google.maps.event.addDomListener(window, 'load', initialize);
-
-        function codeAddress() {
-            var address = document.getElementById('City').value + ', OR';
-            geocoder.geocode({ 'address': address }, function (results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    map.setCenter(results[0].geometry.location);
-                } else {
-                    alert("City and State not recognized. Error:" + status);
-                }
-            })
-        }
-
-        $(function () {
-            $('#City').blur(function () {
-                codeAddress();
-            })
-        })
     </script>
     }
 

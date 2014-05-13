@@ -28,9 +28,9 @@ namespace NerdDinner
             //   consumerKey: "",
             //   consumerSecret: "");
 
-            //app.UseFacebookAuthentication(
-            //   appId: "",
-            //   appSecret: "");
+            app.UseFacebookAuthentication(
+               appId: "224714914337263",
+               appSecret: "5a1b7152655400fb986d6f817ff19bf6");
 
             //app.UseGoogleAuthentication();
         }

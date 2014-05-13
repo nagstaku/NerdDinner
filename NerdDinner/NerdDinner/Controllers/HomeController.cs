@@ -12,7 +12,7 @@ namespace NerdDinner.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         public ActionResult Index()
         {
-            ViewData["PopularDinners"] = db.Meetings.Include("Location");
+            ViewData["PopularDinners"] = db.Meetings.Select(m => m).Take(3);
             ViewBag.ColorPicker = new List<string> { "panel-danger", "panel-success", "panel-info" };
             return View();
         }

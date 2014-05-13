@@ -8,14 +8,16 @@ using System.Web;
 
 namespace NerdDinner.DAL
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
         public ApplicationDbContext()
             : base("DefaultConnection")
         {
         }
-        public DbSet<Location> Locations { get; set; }
         public DbSet<Meeting> Meetings { get; set; }
+
+        public System.Data.Entity.DbSet<NerdDinner.Models.User> IdentityUsers { get; set; }
+
 
     }
 }
