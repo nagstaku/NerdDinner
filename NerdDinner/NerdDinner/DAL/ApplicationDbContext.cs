@@ -15,9 +15,5 @@ namespace NerdDinner.DAL
         {
         }
         public DbSet<Meeting> Meetings { get; set; }
-
-        public System.Data.Entity.DbSet<NerdDinner.Models.User> IdentityUsers { get; set; }
-
-
     }
 }

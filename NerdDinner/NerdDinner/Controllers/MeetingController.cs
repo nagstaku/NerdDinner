@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using NerdDinner.Models;
 using NerdDinner.DAL;
+using Microsoft.AspNet.Identity;
 
 namespace NerdDinner.Controllers
 {
@@ -40,7 +41,7 @@ namespace NerdDinner.Controllers
         // GET: /Meeting/Create
         public ActionResult Create()
         {
-            ViewBag.OwnerID = new SelectList(db.IdentityUsers, "Id", "UserName");
+            ViewBag.OwnerID = new SelectList(db.Users, "Id", "UserName");
             return View();
         }
 
@@ -54,12 +55,11 @@ namespace NerdDinner.Controllers
             if (ModelState.IsValid)
             {
                 meeting.MeetingID = Guid.NewGuid();
+                meeting.OwnerID = User.Identity.GetUserId();
                 db.Meetings.Add(meeting);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
-            ViewBag.OwnerID = new SelectList(db.IdentityUsers, "Id", "UserName", meeting.OwnerID);
             return View(meeting);
         }
 
@@ -75,7 +75,6 @@ namespace NerdDinner.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.OwnerID = new SelectList(db.IdentityUsers, "Id", "UserName", meeting.OwnerID);
             return View(meeting);
         }
 
@@ -92,7 +91,7 @@ namespace NerdDinner.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.OwnerID = new SelectList(db.IdentityUsers, "Id", "UserName", meeting.OwnerID);
+            ViewBag.OwnerID = new SelectList(db.Users, "Id", "UserName", meeting.OwnerID);
             return View(meeting);
         }
 
