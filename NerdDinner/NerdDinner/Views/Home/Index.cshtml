@@ -19,19 +19,36 @@
             as IQueryable<NerdDinner.Models.Meeting>)
               {
     <div class="panel @ViewBag.ColorPicker[count]">
-      <div class="panel-heading">
+      <div class="panel-heading modal-target">
         <h3 class="panel-title">@dinner.Title</h3>
       </div>
       <div class="panel-body">
         @dinner.Description 
           <input type="hidden" value="@dinner.Lat" id="address-@count-Lat" />
           <input type="hidden" value="@dinner.lng" id="address-@count-Lng" />
-          <span class="glyphicon glyphicon-map-marker pull-right" style="font-size:larger"></span>
+          <span class="glyphicon glyphicon-map-marker pull-right" style="font-size:larger;cursor:pointer;" onclick="findEvent(@dinner.Lat, @dinner.lng)"></span>
       </div>
 
     </div>
+    <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="modal-@count">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">@dinner.Title</h4>
+                </div>
+                <div class="modal-body">
+                    <p>@dinner.Description</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">I'm coming!</button>
+                </div>
+            </div>
+        </div>
+    </div>
                   count++;
-                }}
+              }}
     </div>
     <div class="col-md-7 well">
         <div id="map-canvas" style="height: 447px; max-width: none;"></div>
@@ -55,8 +72,7 @@
                             Number(document.getElementById("address-0-Lat").value),
                             Number(document.getElementById("address-0-Lng").value)
                             ),
-                        map: map,
-                        infowindow: 'test'
+                        map: map
                     });
                     var markerGreen = new google.maps.Marker({
                         position: new google.maps.LatLng(
@@ -75,7 +91,16 @@
                         icon: 'http://maps.gstatic.com/mapfiles/markers2/boost-marker-mapview.png'
                     });
         }
+        function findEvent(lat, lng) {
+            map.panTo(new google.maps.LatLng(lat, lng));
+            map.setZoom(4);
+        }
         google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+    <script>
+        $(".modal-target").click(function () {
+            $(this).parent().next().modal('show');
+        });
     </script>
     }
 

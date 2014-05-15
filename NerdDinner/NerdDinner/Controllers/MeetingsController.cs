@@ -3,34 +3,35 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using NerdDinner.Models;
 using NerdDinner.DAL;
+using NerdDinner.Models;
 using Microsoft.AspNet.Identity;
 
 namespace NerdDinner.Controllers
 {
-    public class MeetingController : Controller
+    public class MeetingsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: /Meeting/
-        public ActionResult Index()
+        // GET: Meetings
+        public async Task<ActionResult> Index()
         {
-            var meetings = db.Meetings.Include(m => m.Owner);
-            return View(meetings.ToList());
+            var meetings = db.Meetings.Include(m => m.Host);
+            return View(await meetings.ToListAsync());
         }
 
-        // GET: /Meeting/Details/5
-        public ActionResult Details(Guid? id)
+        // GET: Meetings/Details/5
+        public async Task<ActionResult> Details(Guid? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Meeting meeting = db.Meetings.Find(id);
+            Meeting meeting = await db.Meetings.FindAsync(id);
             if (meeting == null)
             {
                 return HttpNotFound();
@@ -38,71 +39,74 @@ namespace NerdDinner.Controllers
             return View(meeting);
         }
 
-        // GET: /Meeting/Create
+        // GET: Meetings/Create
         public ActionResult Create()
         {
             ViewBag.OwnerID = new SelectList(db.Users, "Id", "UserName");
             return View();
         }
 
-        // POST: /Meeting/Create
+        // POST: Meetings/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include="MeetingID,Title,Date,Lat,lng,Description,OwnerID")] Meeting meeting)
+        public async Task<ActionResult> Create([Bind(Include = "MeetingID,Title,Date,Lat,lng,Description,Address,OwnerID")] Meeting meeting)
         {
             if (ModelState.IsValid)
             {
                 meeting.MeetingID = Guid.NewGuid();
                 meeting.OwnerID = User.Identity.GetUserId();
                 db.Meetings.Add(meeting);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
+
+            ViewBag.OwnerID = new SelectList(db.Users, "Id", "UserName", meeting.OwnerID);
             return View(meeting);
         }
 
-        // GET: /Meeting/Edit/5
-        public ActionResult Edit(Guid? id)
+        // GET: Meetings/Edit/5
+        public async Task<ActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Meeting meeting = db.Meetings.Find(id);
+            Meeting meeting = await db.Meetings.FindAsync(id);
             if (meeting == null)
             {
                 return HttpNotFound();
             }
+            ViewBag.OwnerID = new SelectList(db.Users, "Id", "UserName", meeting.OwnerID);
             return View(meeting);
         }
 
-        // POST: /Meeting/Edit/5
+        // POST: Meetings/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include="MeetingID,Title,Date,Lat,lng,Description,OwnerID")] Meeting meeting)
+        public async Task<ActionResult> Edit([Bind(Include = "MeetingID,Title,Date,Lat,lng,Description,Address,OwnerID")] Meeting meeting)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(meeting).State = EntityState.Modified;
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             ViewBag.OwnerID = new SelectList(db.Users, "Id", "UserName", meeting.OwnerID);
             return View(meeting);
         }
 
-        // GET: /Meeting/Delete/5
-        public ActionResult Delete(Guid? id)
+        // GET: Meetings/Delete/5
+        public async Task<ActionResult> Delete(Guid? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Meeting meeting = db.Meetings.Find(id);
+            Meeting meeting = await db.Meetings.FindAsync(id);
             if (meeting == null)
             {
                 return HttpNotFound();
@@ -110,14 +114,14 @@ namespace NerdDinner.Controllers
             return View(meeting);
         }
 
-        // POST: /Meeting/Delete/5
+        // POST: Meetings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(Guid id)
+        public async Task<ActionResult> DeleteConfirmed(Guid id)
         {
-            Meeting meeting = db.Meetings.Find(id);
+            Meeting meeting = await db.Meetings.FindAsync(id);
             db.Meetings.Remove(meeting);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
