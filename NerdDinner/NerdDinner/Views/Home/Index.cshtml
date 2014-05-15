@@ -3,29 +3,104 @@
 }
 
 <div class="jumbotron">
-    <h1>Hello World!</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+    <h1>Welcome to Nerd Dinner!</h1>
+    <p class="lead">
+        This project is a re-write of the popular Nerd Dinner MVC application using MVC 5 and Entity Framework 6. It is primarily
+        a portfolio project for myself but feel free to download and fork it on GitHub!
+    </p>
+    <p><a href="http://asp.net" class="btn btn-primary btn-large">GitHub &raquo;</a></p>
 </div>
 
 <div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+    <div class="col-md-5">
+        <h2>Upcoming Events:</h2>
+        @{int count = 0;}
+            @{foreach (var dinner in ViewData["PopularDinners"]
+            as IQueryable<NerdDinner.Models.Meeting>)
+              {
+    <div class="panel @ViewBag.ColorPicker[count]">
+      <div class="panel-heading modal-target">
+        <h3 class="panel-title">@dinner.Title</h3>
+      </div>
+      <div class="panel-body">
+        @dinner.Description 
+          <input type="hidden" value="@dinner.Lat" id="address-@count-Lat" />
+          <input type="hidden" value="@dinner.lng" id="address-@count-Lng" />
+          <span class="glyphicon glyphicon-map-marker pull-right" style="font-size:larger;cursor:pointer;" onclick="findEvent(@dinner.Lat, @dinner.lng)"></span>
+      </div>
+
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+    <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="modal-@count">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">@dinner.Title</h4>
+                </div>
+                <div class="modal-body">
+                    <p>@dinner.Description</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">I'm coming!</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+                  count++;
+              }}
+    </div>
+    <div class="col-md-7 well">
+        <div id="map-canvas" style="height: 447px; max-width: none;"></div>
     </div>
 </div>
+<br />
+
+@section Scripts {
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script>
+        var map;
+        function initialize() {
+            var mapOptions = {
+                center: new google.maps.LatLng(37.09024, -96.712891),
+                zoom: 3
+            };
+            map = new google.maps.Map(document.getElementById("map-canvas"),
+                mapOptions);
+                    var markerRed = new google.maps.Marker({
+                        position: new google.maps.LatLng(
+                            Number(document.getElementById("address-0-Lat").value),
+                            Number(document.getElementById("address-0-Lng").value)
+                            ),
+                        map: map
+                    });
+                    var markerGreen = new google.maps.Marker({
+                        position: new google.maps.LatLng(
+                            Number(document.getElementById("address-1-Lat").value),
+                            Number(document.getElementById("address-1-Lng").value)
+                            ),
+                        map: map,
+                        icon: 'http://maps.gstatic.com/mapfiles/markers2/icon_green.png'
+                    });
+                    var markerBlue = new google.maps.Marker({
+                        position: new google.maps.LatLng(
+                            Number(document.getElementById("address-2-Lat").value),
+                            Number(document.getElementById("address-2-Lng").value)
+                            ),
+                        map: map,
+                        icon: 'http://maps.gstatic.com/mapfiles/markers2/boost-marker-mapview.png'
+                    });
+        }
+        function findEvent(lat, lng) {
+            map.panTo(new google.maps.LatLng(lat, lng));
+            map.setZoom(4);
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+    <script>
+        $(".modal-target").click(function () {
+            $(this).parent().next().modal('show');
+        });
+    </script>
+    }
+

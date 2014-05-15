@@ -1,0 +1,132 @@
+﻿@model NerdDinner.Models.Meeting
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<div class="row">
+    <div class="col-md-6">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <h4>Create A Meeting</h4>
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
+
+
+                @Html.EditorFor(model => model.Lat, new { htmlAttributes = new { @class = "form-control" } })
+
+
+                @Html.EditorFor(model => model.lng, new { htmlAttributes = new { @class = "form-control" } })
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <div class="input-group">
+                            @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" onclick="codeAddress()">Go!</button>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <input type="button" name="button" value="Geocode" onclick="codeAddress()" />
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Create" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-md-6">
+        <div class="well">
+            <div id="map-canvas" style="height: 447px; max-width: none;"></div>
+        </div>
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+<script>
+    var map;
+    var geocoder;
+    var marker;
+    function initialize() {
+        geocoder = new google.maps.Geocoder();
+            var mapOptions = {
+                center: new google.maps.LatLng(37.09024, -96.712891),
+                zoom: 3
+            };
+            map = new google.maps.Map(document.getElementById("map-canvas"),
+                mapOptions);
+    }
+    function codeAddress() {
+        var address = document.getElementById('Address').value;
+        geocoder.geocode({ 'address': address }, function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                map.panTo(results[0].geometry.location);
+                map.setZoom(14);
+                var marker = new google.maps.Marker({
+                    map: map,
+                    draggable: true,
+                    animation: google.maps.Animation.DROP,
+                    position: results[0].geometry.location
+                });
+                var LatLng = marker.getPosition();
+                document.getElementById("Lat").setAttribute('value', LatLng.lat());
+                document.getElementById("lng").setAttribute('value', LatLng.lng());
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Drag Me To Exact Location!'
+                });
+                infowindow.open(map, marker);
+                google.maps.event.addListener(marker, 'dragend', function () {
+                    infowindow.close(map, marker);
+                    var LatLng = marker.getPosition();
+                    document.getElementById("Lat").setAttribute('value', LatLng.lat());
+                    document.getElementById("lng").setAttribute('value', LatLng.lng());
+                });
+            } else {
+                alert('Location not found')
+            }
+        })
+    }
+    google.maps.event.addDomListener(window, 'load', initialize);
+
+</script>
+}
