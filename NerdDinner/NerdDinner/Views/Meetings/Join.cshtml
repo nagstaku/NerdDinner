@@ -1,0 +1,75 @@
+﻿@model NerdDinner.Models.Meeting
+
+@{
+    ViewBag.Title = "Join";
+}
+<div class="row">
+    <div class="col-md-6">
+        <div>
+            <h4>Join Meeting</h4>
+            <hr />
+            <dl class="dl-horizontal">
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Title)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Title)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Date)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Date)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Description)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Description)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Address)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Address)
+                </dd>
+
+            </dl>
+        </div>
+        @using (Html.BeginForm("Join", "Meetings", new { id = Model.MeetingID }, FormMethod.Post))
+        {
+            <input type="hidden" value="@Model.MeetingID" />
+            <input type="submit" class="btn btn-primary center-block" value="Let's DO THIS!">
+        }
+        </div>
+    @Html.Partial("GoogleMapCol6")
+    </div>
+
+        @section Scripts {
+            <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+            <script>
+                var map;
+                var marker;
+                function initialize() {
+                    Latlng = new google.maps.LatLng(@Model.Lat, @Model.lng);
+                    var mapOptions = {
+                        center: Latlng,
+                        zoom: 9
+                    };
+                    map = new google.maps.Map(document.getElementById("map-canvas"),
+                        mapOptions);
+                    marker = new google.maps.Marker({
+                        position: Latlng,
+                        map: map});
+                }
+                google.maps.event.addDomListener(window, 'load', initialize);
+            </script>
+        }

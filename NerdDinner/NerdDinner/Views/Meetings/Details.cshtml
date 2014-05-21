@@ -42,6 +42,18 @@
             @Html.DisplayFor(model => model.Address)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.Attendees)
+        </dt>
+        <dd>
+            <ul>
+                @foreach (var i in Model.Attendees)
+                {
+                    <li>@i.UserName</li>
+                }
+            </ul>
+        </dd>
+
     </dl>
 </div>
 <p>

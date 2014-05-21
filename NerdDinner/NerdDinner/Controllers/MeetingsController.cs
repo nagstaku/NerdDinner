@@ -13,6 +13,7 @@ using Microsoft.AspNet.Identity;
 
 namespace NerdDinner.Controllers
 {
+[Authorize]
     public class MeetingsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -57,6 +58,8 @@ namespace NerdDinner.Controllers
             {
                 meeting.MeetingID = Guid.NewGuid();
                 meeting.OwnerID = User.Identity.GetUserId();
+                User attendee = db.Users.Where(u => u.Id == meeting.OwnerID).FirstOrDefault();
+                meeting.Attendees.Add(attendee);
                 db.Meetings.Add(meeting);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -123,6 +126,36 @@ namespace NerdDinner.Controllers
             db.Meetings.Remove(meeting);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
+        }
+
+        public async Task<ActionResult> Join(Guid id)
+        {
+            Meeting meeting = await db.Meetings.FindAsync(id);
+            if (meeting == null)
+            { return HttpNotFound(); }
+            return View(meeting);
+        }
+        [HttpPost]
+        public async Task<ActionResult> Join(Guid? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Meeting meeting = await db.Meetings.FindAsync(id);
+            if (meeting == null)
+            {
+                return HttpNotFound();
+            }
+            else
+            {
+                string userID = User.Identity.GetUserId();
+                User Attendee = db.Users.Where(u => u.Id == userID).FirstOrDefault();
+                meeting.Attendees.Add(Attendee);
+                db.Entry(meeting).State = EntityState.Modified;
+                await db.SaveChangesAsync();
+            }
+            return View(meeting);
         }
 
         protected override void Dispose(bool disposing)

@@ -69,11 +69,7 @@
             </div>
         }
     </div>
-    <div class="col-md-6">
-        <div class="well">
-            <div id="map-canvas" style="height: 447px; max-width: none;"></div>
-        </div>
-    </div>
+    @Html.Partial("GoogleMapCol6")
 </div>
 
 <div>
@@ -102,7 +98,8 @@
             if (status == google.maps.GeocoderStatus.OK) {
                 map.panTo(results[0].geometry.location);
                 map.setZoom(14);
-                var marker = new google.maps.Marker({
+                if (marker != null) {marker.setMap(null)}
+                marker = new google.maps.Marker({
                     map: map,
                     draggable: true,
                     animation: google.maps.Animation.DROP,
