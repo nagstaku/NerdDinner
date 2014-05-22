@@ -21,7 +21,8 @@ namespace NerdDinner.Controllers
         // GET: Meetings
         public async Task<ActionResult> Index()
         {
-            var meetings = db.Meetings.Include(m => m.Host);
+            string currentUser = User.Identity.GetUserId();
+            var meetings = db.Meetings.Include(m => m.Host).Where(m => m.Host.Id == currentUser);
             return View(await meetings.ToListAsync());
         }
 
@@ -62,7 +63,7 @@ namespace NerdDinner.Controllers
                 meeting.Attendees.Add(attendee);
                 db.Meetings.Add(meeting);
                 await db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
             ViewBag.OwnerID = new SelectList(db.Users, "Id", "UserName", meeting.OwnerID);
@@ -151,11 +152,18 @@ namespace NerdDinner.Controllers
             {
                 string userID = User.Identity.GetUserId();
                 User Attendee = db.Users.Where(u => u.Id == userID).FirstOrDefault();
-                meeting.Attendees.Add(Attendee);
-                db.Entry(meeting).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                if (!meeting.Attendees.Contains(Attendee))
+                {
+                    meeting.Attendees.Add(Attendee);
+                    db.Entry(meeting).State = EntityState.Modified;
+                    await db.SaveChangesAsync();
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home").Danger("You're Already Attending This Dinner!");
+                }
             }
-            return View(meeting);
+            return RedirectToAction("Index", "Home").Success("Your Dinner has been added!");
         }
 
         protected override void Dispose(bool disposing)

@@ -30,6 +30,8 @@
         </div>
     </div>
     <div class="container body-content">
+        <br />
+        @Html.Partial("_Flash")
         @RenderBody()
         <hr />
         <footer>
@@ -39,6 +41,11 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    <script type="text/javascript">
+    $(function () {
+        $("#flash-messages").flashMessage();
+    });
+    </script>
     @RenderSection("scripts", required: false)
 </body>
 </html>
