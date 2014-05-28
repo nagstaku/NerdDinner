@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IPagedList<Meeting>
+@{
     ViewBag.Title = "Home Page";
 }
 
@@ -7,61 +8,19 @@
     <p class="lead">
         This project is a re-write of the popular Nerd Dinner MVC application using MVC 5 and Entity Framework 6. It is primarily
         a portfolio project for myself but feel free to download and fork it on GitHub! @if (null != ViewBag.Message)
-                                                                                        {
-                                                                                            @ViewBag.Message
-                                                                                        }
+        {
+            @ViewBag.Message
+        }
     </p>
     <p><a href="https://github.com/nagstaku/NerdDinner" class="btn btn-primary btn-large">GitHub &raquo;</a></p>
 </div>
 
 <div class="row">
     <div class="col-md-5">
-        <h2>Upcoming Events:</h2>
-        @{int count = 0;}
-        @{foreach (var dinner in ViewData["PopularDinners"]
-            as IQueryable<NerdDinner.Models.Meeting>)
-        {
-            <div class="panel @ViewBag.ColorPicker[count]">
-                <div class="panel-heading modal-target">
-                    <h3 class="panel-title" style="cursor:pointer;text-decoration:underline">@dinner.Title
-                        <span class="badge pull-right"><span class="glyphicon glyphicon-user"></span> @dinner.Attendees.Count()</span>
-                    </h3>
-                    
-                </div>
-                <div class="panel-body">
-                    @dinner.Description
-                    <input type="hidden" value="@dinner.Lat" id="address-@count-Lat" />
-                    <input type="hidden" value="@dinner.lng" id="address-@count-Lng" />
-                    <span class="glyphicon glyphicon-map-marker pull-right" style="font-size:larger;cursor:pointer;" onclick="findEvent(@dinner.Lat, @dinner.lng)"></span>
-                </div>
-
-            </div>
-            <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="modal-@count">
-                <div class="modal-dialog modal-sm">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">@dinner.Title</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>@dinner.Description</p>
-                        </div>
-                        <div class="modal-footer">
-                            @using (Html.BeginForm("Join", "Meetings", new {id=dinner.MeetingID} , FormMethod.Post))
-                            {
-                                
-                            
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <input type="hidden" value="@dinner.MeetingID" />
-                                <input type="submit" class="btn btn-primary" value="I'm Coming!">
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-            count++;
-        }}
+        @Html.Partial("_Dinners", Model)
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page }), PagedListRenderOptions.TwitterBootstrapPagerAligned)
     </div>
+
     <div class="col-md-7 well">
         <div id="map-canvas" style="height: 447px; max-width: none;"></div>
     </div>

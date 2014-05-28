@@ -43,11 +43,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Attendees)
+            @Html.DisplayNameFor(model => model.Users)
         </dt>
         <dd>
             <ul>
-                @foreach (var i in Model.Attendees)
+                @foreach (var i in Model.Users)
                 {
                     <li>@i.UserName</li>
                 }

@@ -8,7 +8,7 @@ namespace NerdDinner.Models
     public class User : IdentityUser
     {
         public string email { get; set; }
-        public List<Meeting> Meetings { get; set; }
+        public virtual List<Meeting> Meetings { get; set; }
     }
 
     //public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

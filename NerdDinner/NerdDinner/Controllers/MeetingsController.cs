@@ -60,7 +60,7 @@ namespace NerdDinner.Controllers
                 meeting.MeetingID = Guid.NewGuid();
                 meeting.OwnerID = User.Identity.GetUserId();
                 User attendee = db.Users.Where(u => u.Id == meeting.OwnerID).FirstOrDefault();
-                meeting.Attendees.Add(attendee);
+                meeting.Users.Add(attendee);
                 db.Meetings.Add(meeting);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index", "Home");
@@ -152,9 +152,9 @@ namespace NerdDinner.Controllers
             {
                 string userID = User.Identity.GetUserId();
                 User Attendee = db.Users.Where(u => u.Id == userID).FirstOrDefault();
-                if (!meeting.Attendees.Contains(Attendee))
+                if (!meeting.Users.Contains(Attendee))
                 {
-                    meeting.Attendees.Add(Attendee);
+                    meeting.Users.Add(Attendee);
                     db.Entry(meeting).State = EntityState.Modified;
                     await db.SaveChangesAsync();
                 }

@@ -15,5 +15,20 @@ namespace NerdDinner.DAL
         {
         }
         public DbSet<Meeting> Meetings { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Meeting>()
+                .HasMany(c => c.Users)
+                .WithMany(u => u.Meetings)
+                .Map(x =>
+                {
+                    x.MapLeftKey("MeetingId");
+                    x.MapRightKey("UserId");
+                    x.ToTable("MeetingUserMapping");
+                });
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

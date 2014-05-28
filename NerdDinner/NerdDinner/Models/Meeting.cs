@@ -12,7 +12,7 @@ namespace NerdDinner.Models
     {
         public Meeting()
         {
-            Attendees = new List<User>();
+            Users = new List<User>();
         }
         public Guid MeetingID { get; set; }
         public string Title { get; set; }
@@ -27,6 +27,6 @@ namespace NerdDinner.Models
         [ForeignKey("OwnerID")]
         [HiddenInput(DisplayValue = false)]
         public User Host { get; set; }
-        virtual public List<User> Attendees { get; set; }
+        public virtual List<User> Users { get; set; }
     }
 }
