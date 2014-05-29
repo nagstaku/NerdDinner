@@ -207,6 +207,7 @@
     <Content Include="Content\bootstrap.css.map" />
     <None Include="Properties\PublishProfiles\pdxNerdDinner.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\indexMap.js" />
     <Content Include="Scripts\jquery.cookie.js" />
     <Content Include="Scripts\jQuery.flashMessage.js" />
     <Content Include="Scripts\bootstrap.js" />

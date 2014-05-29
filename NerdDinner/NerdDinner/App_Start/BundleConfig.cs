@@ -13,6 +13,10 @@ namespace NerdDinner
                         "~/Scripts/jquery.cookie.js",
                         "~/Scripts/Jquery.flashMessage.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/nerdDinner").Include(
+                        "~/Scripts/indexMap.js",
+                        "~/Scripts/nerdDinner.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
 

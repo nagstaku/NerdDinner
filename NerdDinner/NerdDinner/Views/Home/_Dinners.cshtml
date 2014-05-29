@@ -46,5 +46,9 @@
         </div>
                         count++;
     }}
-</div>
 
+    <div class="pagedList text-center" data-nerd-target="#dinners">
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+        PagedListRenderOptions.PageNumbersOnly)
+    </div>
+</div>
