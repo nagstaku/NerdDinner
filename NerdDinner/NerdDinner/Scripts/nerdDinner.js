@@ -1,22 +1,21 @@
-﻿var getPage = function () {
-    var $a = $(this);
+﻿    var getPage = function () {
+        var $a = $(this);
 
-    var options = {
-        url: $a.attr("href"),
-        type: "get"
-    };
+        var options = {
+            url: $a.attr("href"),
+            type: "get"
+        };
 
-    $.ajax(options).done(function (data) {
-        var target = $a.parents("div.pagedList").attr("data-nerd-target");
-        $(target).replaceWith(data);
-    });
+        $.ajax(options).done(function (data) {
+            var target = $a.parents("div.pagedList").attr("data-nerd-target");
+            $(target).replaceWith(data);
+            deleteMarkers();
+            setRGBmarkers();
+        });
+        return false;
+    }
 
-    deleteMarkers();
-    initialize();
-    return false;
-}
-
-$(".body-content").on("click", ".pagedList a", getPage);
+    $(".body-content").on("click", ".pagedList a", getPage);
 
 
 //So how this works is each of the 3 Dinners shown on screen
