@@ -2,11 +2,11 @@
 
 <div id="dinners">
     <h2>Upcoming Events:</h2>
-    @{List<string> panelDecorations = new List<string>() { "panel-danger", "panel-success", "panel-info" };//iterated through for each of 3 divs to style panel colors
+    @{List<string> panelDecorations = new List<string>() { "panel-danger", "panel-success", "panel-info" }; }
     @{int count = 0;}
     @{foreach (var dinner in Model)
     {
-        <div class="panel @ViewBag.ColorPicker[count]">
+        <div class="panel @panelDecorations[count]">
             <div class="panel-heading modal-target">
                 <h3 class="panel-title" style="cursor:pointer;text-decoration:underline">
                     @dinner.Title
