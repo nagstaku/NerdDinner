@@ -14,7 +14,6 @@ namespace NerdDinner.Controllers
         public ActionResult Index(int page = 1)
         {
             var model = db.Meetings.Include("Users").OrderByDescending(m => m.Users.Count()).ToPagedList(page, 3);
-            ViewBag.ColorPicker = new List<string> { "panel-danger", "panel-success", "panel-info" };
 
             if (Request.IsAjaxRequest())
             {

@@ -93,7 +93,7 @@ namespace NerdDinner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "MeetingID,Title,Date,Lat,lng,Description,Address,OwnerID")] Meeting meeting)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && meeting.OwnerID == User.Identity.GetUserId())
             {
                 db.Entry(meeting).State = EntityState.Modified;
                 await db.SaveChangesAsync();
@@ -124,6 +124,10 @@ namespace NerdDinner.Controllers
         public async Task<ActionResult> DeleteConfirmed(Guid id)
         {
             Meeting meeting = await db.Meetings.FindAsync(id);
+            if (meeting.OwnerID != User.Identity.GetUserId()) //if the meeting owner isn't the person making the request, then return BadRequest
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             db.Meetings.Remove(meeting);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
