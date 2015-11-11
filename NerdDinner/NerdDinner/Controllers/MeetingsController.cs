@@ -60,7 +60,8 @@ namespace NerdDinner.Controllers
                 meeting.MeetingID = Guid.NewGuid();
                 meeting.OwnerID = User.Identity.GetUserId();
                 User attendee = db.Users.Where(u => u.Id == meeting.OwnerID).FirstOrDefault();
-                meeting.Users.Add(attendee);
+                var users = new List<User>() { attendee };
+                meeting.Users = users;
                 db.Meetings.Add(meeting);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index", "Home");

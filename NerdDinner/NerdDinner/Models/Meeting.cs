@@ -10,10 +10,6 @@ namespace NerdDinner.Models
 {
     public class Meeting
     {
-        public Meeting()
-        {
-            Users = new List<User>();
-        }
         public Guid MeetingID { get; set; }
         public string Title { get; set; }
         public DateTime Date { get; set; }
@@ -27,6 +23,6 @@ namespace NerdDinner.Models
         [ForeignKey("OwnerID")]
         [HiddenInput(DisplayValue = false)]
         public User Host { get; set; }
-        public virtual List<User> Users { get; set; }
+        public virtual ICollection<User> Users { get; set; }
     }
 }
