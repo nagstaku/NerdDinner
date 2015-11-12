@@ -2,6 +2,8 @@
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
+using System.Configuration;
+using System.Web.Hosting;
 
 namespace NerdDinner
 {
@@ -30,7 +32,7 @@ namespace NerdDinner
 
             app.UseFacebookAuthentication(
                appId: "224714914337263",
-               appSecret: "5a1b7152655400fb986d6f817ff19bf6");
+               appSecret: ConfigurationManager.AppSettings["FacebookAppSecret"].ToString());
 
             //app.UseGoogleAuthentication();
         }
